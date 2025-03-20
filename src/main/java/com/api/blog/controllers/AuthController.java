@@ -43,7 +43,7 @@ public class AuthController {
             return ResponseEntity.ok(response);
         }catch (BadCredentialsException bc) {
             logger.warn("failed to authenticate for user: {}",request.getEmail());
-            logger.error("error message: "+bc.getMessage());
+            logger.error("error message: {}", bc.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         } catch (Exception e) {
             logger.error("authentication error: {}",e.getMessage());
