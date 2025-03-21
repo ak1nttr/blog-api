@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,12 +22,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AuthenticationService authService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+
         try{
             String token = extractToken(request);
-            if (token != null){
+            if (token != null && !token.isEmpty()){
                 UserDetails userDetails = authService.validateToken(token);
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -42,9 +45,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }catch (Exception exception){
             log.warn("Authentication went wrong in JwtAuthenticationFiler class");
-            log.error("Could not authenticate: {}",exception.getMessage());
+            log.error("Could not authenticate, invalid auth token: {}",exception.getMessage());
         }
-
+        filterChain.doFilter(request,response);
     }
 
 

@@ -30,7 +30,7 @@ public class AuthController {
 
         UserDetails userDetails = authService.authenticate(request.getEmail(), request.getPassword());
         String tokenGenerated = authService.generateToken(userDetails);
-        System.out.println("got here!");
+
         AuthResponse response = AuthResponse.builder()
                 .token(tokenGenerated)
                 .expiresIn(86400)
